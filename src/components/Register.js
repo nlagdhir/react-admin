@@ -1,31 +1,54 @@
 import axios from "axios";
 import React, {useState} from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import http from "../http";
+import { InputJS } from "../utils/Scripts";
+import swal from 'sweetalert';
+
 
 const Register = () => {
+    
+    InputJS();
+
+    const navigate = useNavigate();
 
     const [registerInput, setRegisterInput] = useState({
-        username: '',
+        name: '',
         email : '',
-        password : ''
+        password : '',
+        error_list : []
     });
 
     const handleInputChange = (event) => {
-        setRegisterInput({...registerInput, [event.target.username] : event.target.value })
+        console.log(event.target.value);
+        setRegisterInput({...registerInput, [event.target.name] : event.target.value })
     }
 
     const handleRegisterSubmit = (event) => {
         event.preventDefault();
 
         const data = {
-            username : registerInput.name,
+            name : registerInput.name,
             email : registerInput.email,
             password : registerInput.password
         }
 
-        // axios.post(`/api/register`, data).then(res => {
+        axios.get('http://localhost:8000/sanctum/csrf-cookie').then(response => {
+            http.post(`register`, data).then(res => {
+                if(res.data.status === 200) {
+                    localStorage.setItem('auth_token', res.data.token);
+                    localStorage.setItem('auth_name', res.data.username);
 
-        // })
+                    swal('success',res.data.message,'success').then(function() {
+                        navigate('/admin');
+                    });
+                    
+                }else{
+                    setRegisterInput({...registerInput, error_list: res.data.validator_errors})
+                }
+            })
+        });
+        
     }
 
 
@@ -48,21 +71,21 @@ const Register = () => {
                                 <div className="d-flex align-items-center px-4 px-lg-5 h-100">
                                     <form className="register-form py-5 w-100" method="get" action="login.html" onSubmit={handleRegisterSubmit}>
                                         <div className="input-material-group mb-3">
-                                            <input className="input-material" type="text" name="username" required data-validate-field="username" onChange={handleInputChange} value={registerInput.username} />
-                                            <label className="label-material" htmlFor="register-username">Username</label>
+                                            <input className="input-material" type="text" name="name"  data-validate-field="name" onChange={handleInputChange} value={registerInput.name} />
+                                            <label className="label-material" htmlFor="register-name">Name</label>
+                                            <span>{registerInput.error_list.name}</span>
                                         </div>
                                         <div className="input-material-group mb-3">
-                                            <input className="input-material" type="email" name="registerEmail" required data-validate-field="registerEmail" onChange={handleInputChange} value={registerInput.email} />
+                                            <input className="input-material" type="email" name="email"  data-validate-field="email" onChange={handleInputChange} value={registerInput.email} />
                                             <label className="label-material">Email Address</label>
+                                            <span>{registerInput.error_list.email}</span>
                                         </div>
                                         <div className="input-material-group mb-4">
-                                            <input className="input-material" type="password" name="registerPassword" required data-validate-field="registerPassword" onChange={handleInputChange} value={registerInput.password} />
+                                            <input className="input-material" type="password" name="password"  data-validate-field="password" onChange={handleInputChange} value={registerInput.password} />
                                             <label className="label-material">Password</label>
+                                            <span>{registerInput.error_list.password}</span>
                                         </div>
-                                        <div className="form-check mb-4">
-                                            <input className="form-check-input" id="register-agree" name="registerAgree" type="checkbox" required value="1" data-validate-field="registerAgree" />
-                                            <label className="form-check-label form-label" htmlFor="register-agree">I agree with the terms and policy                        </label>
-                                        </div>
+                                        
                                         <button className="btn btn-primary mb-3" id="login" type="submit">Register</button><br /><small className="text-gray-500">Already have an account?  </small>
                                         <Link to="/login" className="text-sm text-paleBlue">Login</Link>
                                     </form>
