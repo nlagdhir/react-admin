@@ -1,12 +1,50 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import {InputJS } from '../utils/Scripts';
+import http from '../http';
+import swal from 'sweetalert';
 
 const Login = () => {
+
+    InputJS();
+
     const navigate = useNavigate();
 
-    const handleLoginSubmit = (e) => {
+    const [loginField, setLoginField] = useState({
+      email : '',
+      password : '',
+      error_list : []
+    });
+
+    const handleLoginSubmit = (e) => { 
       e.preventDefault();
-      navigate('/admin');
+
+      const data = {
+        email : loginField.email,
+        password : loginField.password        
+      }
+
+      http.post('login',data).then(res => {
+        if(res.data.status === 200) {
+            localStorage.setItem('auth_token', res.data.token);
+            localStorage.setItem('auth_name', res.data.username);
+
+            swal('success',res.data.message,'success').then(function() {
+                navigate('/admin');
+            });
+        } else if(res.data.status === 401) {
+          swal('warning',res.data.message,'warning');
+        } else {
+          setLoginField({...loginField, error_list:res.data.validators_errors});
+        }
+      })
+      
+
+      //navigate('/admin');
+    }
+
+    const handleInputChange = (event) => {
+      setLoginField({...loginField, [event.target.name]:event.target.value});
     }
 
     return (
@@ -27,12 +65,14 @@ const Login = () => {
                 <div className="d-flex align-items-center px-4 px-lg-5 h-100">
                   <form className="login-form py-5 w-100" method="get" onSubmit={handleLoginSubmit}>
                     <div className="input-material-group mb-3">
-                      <input className="input-material" id="login-username" type="text" name="loginUsername" autoComplete="off" required data-validate-field="loginUsername" />
-                      <label className="label-material" htmlFor="login-username">User Name</label>
+                      <input className="input-material" id="email" type="text" name="email" onChange={handleInputChange} value={loginField.email} autoComplete="off" data-validate-field="loginUsername" />
+                      <label className="label-material" htmlFor="name">Email</label>
+                      <span>{loginField.error_list.email}</span>
                     </div>
                     <div className="input-material-group mb-4">
-                      <input className="input-material" id="login-password" type="password" name="loginPassword" required data-validate-field="loginPassword" />
-                      <label className="label-material" htmlFor="login-password">Password</label>
+                      <input className="input-material" id="password" type="password" onChange={handleInputChange} value={loginField.password} name="password" data-validate-field="loginPassword" />
+                      <label className="label-material" htmlFor="password">Password</label>
+                      <span>{loginField.error_list.password}</span>
                     </div>
                     <button className="btn btn-primary mb-3" id="login" type="submit">Login</button><br />
                     <Link to="/forgot-password" className="text-sm text-paleBlue">Forgot Password?</Link>

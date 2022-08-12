@@ -1,16 +1,50 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { FaSearch, FaChartPie, FaRegEnvelope, FaEnvelope, FaSignOutAlt
+import { Link, useNavigate } from 'react-router-dom';
+import { FaSearch, FaChartPie, FaRegEnvelope, FaEnvelope, FaSignOutAlt, FaWindowClose
 } from "react-icons/fa";
+import http from '../../http';
+import swal from 'sweetalert';
 
 
 const Navbar = () => {
+
+    const navBar = document.querySelector('.navbar');
+    const searchBtn = document.getElementById('search'),
+          searchBox = document.querySelector('.search-box'),
+          searchClose = document.querySelector('.dismiss');
+
+    if (navBar) {
+        searchBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            searchBox.classList.add('fadedIn');
+        });
+
+        searchClose.addEventListener('click', () => searchBox.classList.remove('fadedIn'));
+    }
+
+    const navigate = useNavigate();
+
+    const handleLogoutClick = (e) => {
+        e.preventDefault();
+
+        http.post('logout').then(res => {
+            if(res.data.status === 200) 
+            {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_user');
+                swal('success',res.data.message,'success').then(() => {
+                    navigate('/login');
+                });
+            }
+        })
+    }   
+
     return (
         <header className="header z-index-50">
             <nav className="navbar py-3 px-0 shadow-sm text-white position-relative">
                 <div className="search-box shadow-sm">
                     <button className="dismiss d-flex align-items-center">
-                        <FaChartPie />
+                        <FaWindowClose />
                     </button>
                     <form id="searchForm" action="#" role="search">
                         <input className="form-control shadow-0" type="text" placeholder="What are you looking for..." />
@@ -110,7 +144,7 @@ const Navbar = () => {
                                     <li><a className="dropdown-item" rel="nofollow" href="#"> <img className="me-2" src={require('../../assets/admin/img/flags/16/FR.png')} alt="English" /><span className="text-xs text-gray-700">French                                         </span></a></li>
                                 </ul>
                             </li>
-                            <li className="nav-item"><a className="nav-link text-white" href="/login"> <span className="d-none d-sm-inline">Logout</span>
+                            <li className="nav-item"><a onClick={handleLogoutClick} className="nav-link text-white" href="/login"> <span className="d-none d-sm-inline">Logout</span>
                                 <FaSignOutAlt />
                                 </a></li>
                         </ul>
