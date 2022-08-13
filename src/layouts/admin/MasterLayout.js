@@ -12,6 +12,7 @@ import Footer from './Footer';
 
 
 const MasterLayout = (props) => { 
+    console.log('Master Layout Routes Rendered');
     const [user,setUser] = useState([]);
     console.log(user.length);
 
@@ -27,11 +28,6 @@ const MasterLayout = (props) => {
                 <Sidebar />
 
                 <div className="content-inner w-100">
-                    <header className="bg-white shadow-sm px-4 py-3 z-index-20">
-                        <div className="container-fluid px-0">
-                            <h2 className="mb-0 p-1">Dashboard</h2>
-                        </div>
-                    </header>
                     <Outlet />
                 <Footer />
                 </div>

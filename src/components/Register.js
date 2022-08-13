@@ -71,19 +71,19 @@ const Register = () => {
                                 <div className="d-flex align-items-center px-4 px-lg-5 h-100">
                                     <form className="register-form py-5 w-100" method="get" action="login.html" onSubmit={handleRegisterSubmit}>
                                         <div className="input-material-group mb-3">
-                                            <input className="input-material" type="text" name="name"  data-validate-field="name" onChange={handleInputChange} value={registerInput.name} />
+                                            <input className={registerInput.error_list.name ? 'input-material is-invalid' : 'input-material'} type="text" name="name"  data-validate-field="name" onChange={handleInputChange} value={registerInput.name} />
                                             <label className="label-material" htmlFor="register-name">Name</label>
-                                            <span>{registerInput.error_list.name}</span>
+                                            <div className='js-validate-error-label'>{registerInput.error_list.name}</div>
                                         </div>
                                         <div className="input-material-group mb-3">
-                                            <input className="input-material" type="email" name="email"  data-validate-field="email" onChange={handleInputChange} value={registerInput.email} />
+                                            <input className={registerInput.error_list.email ? 'input-material is-invalid' : 'input-material'} type="email" name="email"  data-validate-field="email" onChange={handleInputChange} value={registerInput.email} />
                                             <label className="label-material">Email Address</label>
-                                            <span>{registerInput.error_list.email}</span>
+                                            <div className='js-validate-error-label'>{registerInput.error_list.email}</div>
                                         </div>
                                         <div className="input-material-group mb-4">
-                                            <input className="input-material" type="password" name="password"  data-validate-field="password" onChange={handleInputChange} value={registerInput.password} />
+                                            <input className={registerInput.error_list.password ? 'input-material is-invalid' : 'input-material'} type="password" name="password"  data-validate-field="password" onChange={handleInputChange} value={registerInput.password} />
                                             <label className="label-material">Password</label>
-                                            <span>{registerInput.error_list.password}</span>
+                                            <div className='js-validate-error-label'>{registerInput.error_list.password}</div>
                                         </div>
                                         
                                         <button className="btn btn-primary mb-3" id="login" type="submit">Register</button><br /><small className="text-gray-500">Already have an account?  </small>

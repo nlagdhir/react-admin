@@ -17,6 +17,7 @@ const Sidebar = () => {
               <Link to='/admin/dashboard' className="sidebar-link"><FaHome />  Dashboard</Link>
               </li>
             <li className="sidebar-item"><Link to='/admin/profile' className="sidebar-link"><FaHome />Profile</Link></li>
+            <li className="sidebar-item"><Link to='/admin/category' className="sidebar-link"><FaHome />Category</Link></li>
            
           </ul>
         </nav>

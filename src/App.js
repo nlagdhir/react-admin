@@ -5,6 +5,7 @@ import Profile from './components/admin/Profile';
 import Homepage from './components/Homepage';
 import Login from './components/Login';
 import Register from './components/Register';
+import Category from './components/admin/Category';
 import MasterLayout from './layouts/admin/MasterLayout';
 import PrivateRoutes from './utils/PrivateRoutes';
 import NonLoggedInRoutes from './utils/NonLoggedInRoutes';
@@ -25,6 +26,7 @@ function App() {
           <Route path="/admin" element={<MasterLayout />}>
             <Route path='dashboard' element={<Dashboard />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="category" element={<Category />} />
           </Route>
         </Route>
       </Routes>

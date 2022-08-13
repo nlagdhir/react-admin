@@ -65,14 +65,14 @@ const Login = () => {
                 <div className="d-flex align-items-center px-4 px-lg-5 h-100">
                   <form className="login-form py-5 w-100" method="get" onSubmit={handleLoginSubmit}>
                     <div className="input-material-group mb-3">
-                      <input className="input-material" id="email" type="text" name="email" onChange={handleInputChange} value={loginField.email} autoComplete="off" data-validate-field="loginUsername" />
+                      <input className={loginField.error_list.email ? 'input-material is-invalid' : 'input-material'} id="email" type="text" name="email" onChange={handleInputChange} value={loginField.email} autoComplete="off" data-validate-field="loginUsername" />
                       <label className="label-material" htmlFor="name">Email</label>
-                      <span>{loginField.error_list.email}</span>
+                      <div className='js-validate-error-label'>{loginField.error_list.email}</div>
                     </div>
                     <div className="input-material-group mb-4">
-                      <input className="input-material" id="password" type="password" onChange={handleInputChange} value={loginField.password} name="password" data-validate-field="loginPassword" />
+                      <input className={loginField.error_list.password ? 'input-material is-invalid' : 'input-material'} id="password" type="password" onChange={handleInputChange} value={loginField.password} name="password" data-validate-field="loginPassword" />
                       <label className="label-material" htmlFor="password">Password</label>
-                      <span>{loginField.error_list.password}</span>
+                      <div className='js-validate-error-label'>{loginField.error_list.password}</div>
                     </div>
                     <button className="btn btn-primary mb-3" id="login" type="submit">Login</button><br />
                     <Link to="/forgot-password" className="text-sm text-paleBlue">Forgot Password?</Link>
