@@ -17,8 +17,23 @@ const Sidebar = () => {
               <Link to='/admin/dashboard' className="sidebar-link"><FaHome />  Dashboard</Link>
               </li>
             <li className="sidebar-item"><Link to='/admin/profile' className="sidebar-link"><FaHome />Profile</Link></li>
-            <li className="sidebar-item"><Link to='/admin/category' className="sidebar-link"><FaHome />Category</Link></li>
-           
+            
+
+            <li className="sidebar-item"><a className="sidebar-link" href="#category" data-bs-toggle="collapse"> 
+            <FaHome />Category </a>
+              <ul className="collapse list-unstyled " id="category">
+              <li className="sidebar-item"><Link to='/admin/add-category' className="sidebar-link"><FaHome />Add Category</Link></li>
+            <li className="sidebar-item"><Link to='/admin/view-category' className="sidebar-link"><FaHome />View Category</Link></li>
+              </ul>
+            </li>
+
+            <li className="sidebar-item"><a className="sidebar-link" href="#products" data-bs-toggle="collapse"> 
+            <FaHome />Products </a>
+              <ul className="collapse list-unstyled " id="products">
+                <li className="sidebar-item"><Link to='/admin/add-product' className="sidebar-link">Add Product</Link></li>
+                <li className="sidebar-item"><Link to='/admin/view-product' className="sidebar-link">View Product</Link></li>
+              </ul>
+            </li>
           </ul>
         </nav>
     )

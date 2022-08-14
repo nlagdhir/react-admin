@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, {useState} from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import http from "../http";
 import { InputJS } from "../utils/Scripts";
 import swal from 'sweetalert';
@@ -9,8 +9,6 @@ import swal from 'sweetalert';
 const Register = () => {
     
     InputJS();
-
-    const navigate = useNavigate();
 
     const [registerInput, setRegisterInput] = useState({
         name: '',
@@ -40,7 +38,7 @@ const Register = () => {
                     localStorage.setItem('auth_name', res.data.username);
 
                     swal('success',res.data.message,'success').then(function() {
-                        navigate('/admin');
+                        window.location = '/admin';
                     });
                     
                 }else{

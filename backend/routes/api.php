@@ -25,7 +25,15 @@ Route::middleware('auth:sanctum')->group(function() {
         return response()->json(['message'=>'You are in','status' => 200],200);
     });  
 
+    // Category Routes
     Route::post('store-category',[CategoryController::class,'store']);
+    Route::get('category-list',[CategoryController::class,'index']);
+    Route::get('category-edit/{id}',[CategoryController::class,'edit']);
+    Route::put('update-category/{id}',[CategoryController::class,'update']);
+    Route::delete('delete-category/{id}',[CategoryController::class,'destroy']);
+    Route::get('all-category',[CategoryController::class,'allcategory']);
+
+
 
     Route::post('logout',[AuthController::class,'logout']);
 });

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import http from '../../http';
+import http from '../../../http';
 import swal from 'sweetalert';
 
 const Category = () => {
@@ -10,7 +10,7 @@ const Category = () => {
         slug : '',
         name : '',
         description : '',
-        status : '',
+        status : false,
         meta_title : '',
         meta_description : '',
         meta_keyword : '',
@@ -19,7 +19,11 @@ const Category = () => {
 
     const handleInput = (event) => {
         event.persist();
-        setCategoryInput({...categoryInput,[event.target.name]:event.target.value})
+        if(event.target.name != 'status'){
+            setCategoryInput({...categoryInput,[event.target.name]:event.target.value})
+        } else{
+            setCategoryInput({...categoryInput,[event.target.name]:event.target.checked})
+        }
     }
 
     const handleCategoryFormSubmit = (event) => {
@@ -90,13 +94,13 @@ const Category = () => {
                                 <div className="form-row">
                                     <div className="col-md-4 mb-3">
                                         <label htmlFor="slug">Slug :</label>
-                                        <input type="text" onChange={handleInput} value={categoryInput.slug} className="form-control" id="slug" name="slug" placeholder="Slug"  />
-                                        <span>{categoryInput.error_list.slug}</span>
+                                        <input type="text" onChange={handleInput} value={categoryInput.slug} className={categoryInput.error_list.slug ? "form-control is-invalid" : "form-control"} id="slug" name="slug" placeholder="Slug"  />
+                                        <div className='invalid-feedback'>{categoryInput.error_list.slug}</div>
                                     </div>
                                     <div className="col-md-4 mb-3">
                                         <label htmlFor="name">Name :</label>
-                                        <input type="text" onChange={handleInput} value={categoryInput.name}  className="form-control" id="name" name="name" placeholder="Name"  />
-                                        <span>{categoryInput.error_list.name}</span>
+                                        <input type="text" onChange={handleInput} value={categoryInput.name}  className={categoryInput.error_list.name ? "form-control is-invalid" : "form-control"} id="name" name="name" placeholder="Name"  />
+                                        <div className='invalid-feedback'>{categoryInput.error_list.name}</div>
                                     </div>
                                     <div className="col-md-4 mb-3">
                                         <label htmlFor="description">Description :</label>

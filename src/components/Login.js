@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {InputJS } from '../utils/Scripts';
 import http from '../http';
 import swal from 'sweetalert';
@@ -7,8 +7,6 @@ import swal from 'sweetalert';
 const Login = () => {
 
     InputJS();
-
-    const navigate = useNavigate();
 
     const [loginField, setLoginField] = useState({
       email : '',
@@ -30,7 +28,7 @@ const Login = () => {
             localStorage.setItem('auth_name', res.data.username);
 
             swal('success',res.data.message,'success').then(function() {
-                navigate('/admin');
+              window.location = '/admin';
             });
         } else if(res.data.status === 401) {
           swal('warning',res.data.message,'warning');
