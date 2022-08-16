@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react"
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
+import {useParams, useNavigate} from 'react-router-dom';
 import swal from 'sweetalert';
 import http from '../../../http';
 
-const AddProduct = () => {
-    
+const EditProduct = () => {
+
     const [productInput, setProductInput] = useState({
         category: '',
         slug : '',
@@ -25,20 +26,52 @@ const AddProduct = () => {
         status : false,
         error_list : [],
     });
-    const [categorylist, setCategoryList] = useState({});
     const [image, setImage] = useState([]);
-    
-
-    useEffect(() => {     
-        http.get('/all-category').then(res => {
+    const [categorylist, setCategoryList] = useState([]);
+    const {id} = useParams();
+    const navigate = useNavigate(); 
+    useEffect(() => {
+        http.get('all-category').then(res => {
             if(res.data.status === 200)
             {
                 setCategoryList(res.data.category);
             }
-        }); 
-    },[]); 
+        });
+
+        http.get(`product-edit/${id}`).then(res => {
+            if(res.data.status === 200)
+            {
+                const {category,slug,name, description, meta_title,meta_description,meta_keyword, selling_price, original_price, quantity,brand,featured,popular,status } = res.data.product;
+
+                setProductInput({
+                    category,
+                    slug,
+                    name,
+                    description,
+                    meta_title,
+                    meta_description,
+                    meta_keyword,
+                    selling_price,
+                    original_price,
+                    quantity,
+                    brand,
+                    featured,
+                    popular,
+                    status,
+                    error_list : [],
+                });
+
+            }
+            else if(res.data.status === 404)
+            {
+                swal('error',res.data.message,'error');
+                navigate('/admin/view-product');
+            }
+        })
+    },[]);
 
     const handleInput = (event) => {
+        console.log(productInput);
         if(event.target.name == 'status'){
             setProductInput({...productInput,[event.target.name]:event.target.checked})
         } else if(event.target.name == 'image' ){
@@ -46,14 +79,14 @@ const AddProduct = () => {
         } else {
             setProductInput({...productInput,[event.target.name]:event.target.value})
         }
+        console.log(productInput);
     }
 
-    const handleProductFormSubmit = (e) => {
+    const handleProductEditFormSubmit = (e) => {
         e.preventDefault();
 
         const formData = new FormData();
         formData.append('image',image.image);
-        formData.append('category',productInput.category);
         formData.append('slug',productInput.slug);
         formData.append('name',productInput.name);
         formData.append('description',productInput.description);
@@ -69,8 +102,9 @@ const AddProduct = () => {
         formData.append('featured',productInput.featured);
         formData.append('popular',productInput.popular);
         formData.append('status',productInput.status);
-
-        http.post('store-product',formData).then(res => {
+        
+        console.log(formData);
+        http.put(`update-product/${id}`,formData).then(res => {
             if(res.data.status === 200)
             {
                 swal('success',res.data.message,'success');
@@ -100,6 +134,11 @@ const AddProduct = () => {
                 swal('All fields are mandatory','','error');
                 setProductInput({...productInput,error_list:res.data.errors});
             }
+            else if(res.data.status === 404)
+            {
+                swal('error',res.data.message,'error');
+                navigate('admin/view-product');
+            }
         })
     }
 
@@ -116,7 +155,7 @@ const AddProduct = () => {
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb mb-0 py-3">
                     <li className="breadcrumb-item"><a className="fw-light" href="index.html">Home</a></li>
-                    <li className="breadcrumb-item active fw-light" aria-current="page">product</li>
+                    <li className="breadcrumb-item active fw-light" aria-current="page">edit product</li>
                     </ol>
                 </nav>
                 </div>
@@ -125,7 +164,7 @@ const AddProduct = () => {
             <section className="forms">
             <div className="container-fluid">
                 <div className="row">
-                    <form onSubmit={handleProductFormSubmit} encType="multipart/form-data" id="product-form"> 
+                    <form onSubmit={handleProductEditFormSubmit} encType="multipart/form-data" id="product-form"> 
                         <Tabs
                             defaultActiveKey="product"
                             id="product-tab"
@@ -135,7 +174,7 @@ const AddProduct = () => {
                                 <div className="form-row">
                                     <div className="col-md-4 mb-3">
                                         <label htmlFor="slug">Category :</label>
-                                        <select name="category" onChange={handleInput}  className={productInput.error_list.slug ? "form-control is-invalid" : "form-control"}>
+                                        <select name="category" onChange={handleInput} value={productInput.category.id}  className={productInput.error_list.category ? "form-control is-invalid" : "form-control"}>
                                             <option>Select Category</option>
                                             { categorylist && categorylist.length ? categorylist.map(category => {
                                                 return <option value={category.id} key={category.id}>{category.name}</option>;
@@ -228,4 +267,4 @@ const AddProduct = () => {
     )
 }
 
-export default AddProduct;
+export default EditProduct;
