@@ -3,10 +3,12 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import {useParams, useNavigate} from 'react-router-dom';
 import swal from 'sweetalert';
+import Loader from '../../../utils/Loader';
 import http from '../../../http';
 
 const EditProduct = () => {
 
+    const [loading, setLoading] = useState(true);
     const [productInput, setProductInput] = useState({
         category: '',
         slug : '',
@@ -30,6 +32,7 @@ const EditProduct = () => {
     const [categorylist, setCategoryList] = useState([]);
     const {id} = useParams();
     const navigate = useNavigate(); 
+
     useEffect(() => {
         http.get('all-category').then(res => {
             if(res.data.status === 200)
@@ -41,10 +44,11 @@ const EditProduct = () => {
         http.get(`product-edit/${id}`).then(res => {
             if(res.data.status === 200)
             {
-                const {category,slug,name, description, meta_title,meta_description,meta_keyword, selling_price, original_price, quantity,brand,featured,popular,status } = res.data.product;
+                const {category,image,slug,name, description, meta_title,meta_description,meta_keyword, selling_price, original_price, quantity,brand,featured,popular,status } = res.data.product;
 
                 setProductInput({
                     category,
+                    image,
                     slug,
                     name,
                     description,
@@ -67,12 +71,12 @@ const EditProduct = () => {
                 swal('error',res.data.message,'error');
                 navigate('/admin/view-product');
             }
+            setLoading(false);
         })
     },[]);
 
     const handleInput = (event) => {
-        console.log(productInput);
-        if(event.target.name == 'status'){
+        if(event.target.type == 'checkbox'){
             setProductInput({...productInput,[event.target.name]:event.target.checked})
         } else if(event.target.name == 'image' ){
             setImage({image:event.target.files[0]});
@@ -84,10 +88,11 @@ const EditProduct = () => {
 
     const handleProductEditFormSubmit = (e) => {
         e.preventDefault();
-
+        setLoading(true);
         const formData = new FormData();
         formData.append('image',image.image);
         formData.append('slug',productInput.slug);
+        formData.append('category',productInput.category.id);
         formData.append('name',productInput.name);
         formData.append('description',productInput.description);
 
@@ -99,35 +104,16 @@ const EditProduct = () => {
         formData.append('original_price',productInput.original_price);
         formData.append('quantity',productInput.quantity);
         formData.append('brand',productInput.brand);
-        formData.append('featured',productInput.featured);
-        formData.append('popular',productInput.popular);
-        formData.append('status',productInput.status);
+        formData.append('featured',productInput.featured ? '1' : '0');
+        formData.append('popular',productInput.popular ? '1' : '0');
+        formData.append('status',productInput.status ? '1' : '0');
         
-        console.log(formData);
-        http.put(`update-product/${id}`,formData).then(res => {
+        http.post(`update-product/${id}`,formData).then(res => {
             if(res.data.status === 200)
             {
-                swal('success',res.data.message,'success');
-                setProductInput({
-                    category: '',
-                    slug : '',
-                    name : '',
-                    description : '',
-
-                    meta_title : '',
-                    meta_description : '',
-                    meta_keyword : '',
-                    
-                    selling_price : '',
-                    original_price : '',  
-                    quantity : '',
-                    brand : '',
-                    featured : false,
-                    popular : false,
-                    status : false,
-                    error_list : [],
-                });
-
+                swal('success',res.data.message,'success').then(()=>{
+                    navigate('/admin/view-product');
+                })
             }
             else if(res.data.status === 422)
             {
@@ -139,11 +125,13 @@ const EditProduct = () => {
                 swal('error',res.data.message,'error');
                 navigate('admin/view-product');
             }
+            setLoading(false);
         })
     }
 
     return (
         <>
+            {loading ? <Loader /> : ''}
             <header className="bg-white shadow-sm px-4 py-3 z-index-20">
                 <div className="container-fluid px-0">
                 <h2 className="mb-0 p-1">Product</h2>  
@@ -240,18 +228,19 @@ const EditProduct = () => {
                                     <div className="col-md-8 mb-3">
                                         <label htmlFor="image">Image :</label>
                                         <input type="file" onChange={handleInput} className={productInput.error_list.image ? "form-control is-invalid" : "form-control"} id="image" name="image" placeholder="Image"  />
+                                        <img src={`http://localhost:8000/${productInput.image}`} width="50px" alt={productInput.name} />
                                         <div className='invalid-feedback'>{productInput.error_list.image}</div>
                                     </div>
                                     <div className="col-md-4 mb-3">
-                                        <input className="form-check-input" name="featured" onChange={handleInput} value={productInput.featured} type="checkbox" id="featured"  />   
+                                        <input className="form-check-input" name="featured" onChange={handleInput} checked={productInput.featured ? 'checked' : ''} value={productInput.featured} type="checkbox" id="featured"  />   
                                         <label htmlFor="featured">&nbsp;Featured (Checked = shown) :</label>
                                     </div>
                                     <div className="col-md-4 mb-3">
-                                        <input className="form-check-input" name="popular" onChange={handleInput} value={productInput.popular} type="checkbox" id="popular"  />   
+                                        <input className="form-check-input" name="popular" onChange={handleInput} value={productInput.popular} checked={productInput.popular ? 'checked' : ''} type="checkbox" id="popular"  />   
                                         <label htmlFor="popular">&nbsp;Popular (Checked = shown) :</label>
                                     </div>
                                     <div className="col-md-4 mb-3">
-                                        <input className="form-check-input" name="status" onChange={handleInput} value={productInput.status} type="checkbox" id="status"  />   
+                                        <input className="form-check-input" name="status" onChange={handleInput} value={productInput.status} checked={productInput.status ? 'checked' : ''} type="checkbox" id="status"  />   
                                         <label htmlFor="status">&nbsp;Status (Checked = Hidden) :</label>
                                     </div>
                                 </div>

@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import swal from 'sweetalert';
+import Loader from '../../../utils/Loader';
 import http from '../../../http';
 
 const AddProduct = () => {
-    
+    const navigate = useNavigate();
     const [productInput, setProductInput] = useState({
         category: '',
         slug : '',
@@ -25,6 +27,7 @@ const AddProduct = () => {
         status : false,
         error_list : [],
     });
+    const [loading, setLoading] = useState(true);
     const [categorylist, setCategoryList] = useState({});
     const [image, setImage] = useState([]);
     
@@ -35,6 +38,7 @@ const AddProduct = () => {
             {
                 setCategoryList(res.data.category);
             }
+            setLoading(false);
         }); 
     },[]); 
 
@@ -50,7 +54,7 @@ const AddProduct = () => {
 
     const handleProductFormSubmit = (e) => {
         e.preventDefault();
-
+        setLoading(true);
         const formData = new FormData();
         formData.append('image',image.image);
         formData.append('category',productInput.category);
@@ -73,7 +77,6 @@ const AddProduct = () => {
         http.post('store-product',formData).then(res => {
             if(res.data.status === 200)
             {
-                swal('success',res.data.message,'success');
                 setProductInput({
                     category: '',
                     slug : '',
@@ -93,18 +96,23 @@ const AddProduct = () => {
                     status : false,
                     error_list : [],
                 });
-
+                swal('success',res.data.message,'success').then(() => {
+                    navigate('/admin/view-product');
+                });
+                
             }
             else if(res.data.status === 422)
             {
                 swal('All fields are mandatory','','error');
                 setProductInput({...productInput,error_list:res.data.errors});
             }
+            setLoading(false);
         })
     }
 
     return (
         <>
+            {loading ? <Loader /> : ''}
             <header className="bg-white shadow-sm px-4 py-3 z-index-20">
                 <div className="container-fluid px-0">
                 <h2 className="mb-0 p-1">Product</h2>  

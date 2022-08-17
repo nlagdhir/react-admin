@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import {InputJS } from '../utils/Scripts';
 import http from '../http';
 import swal from 'sweetalert';
+import Loader from '../utils/Loader';
 
 const Login = () => {
 
     InputJS();
-
+    
+    const [loading, setLoading] = useState(false);
     const [loginField, setLoginField] = useState({
       email : '',
       password : '',
@@ -16,7 +18,7 @@ const Login = () => {
 
     const handleLoginSubmit = (e) => { 
       e.preventDefault();
-
+      setLoading(true);
       const data = {
         email : loginField.email,
         password : loginField.password        
@@ -35,6 +37,7 @@ const Login = () => {
         } else {
           setLoginField({...loginField, error_list:res.data.validators_errors});
         }
+        setLoading(false);
       })
       
 
@@ -46,7 +49,8 @@ const Login = () => {
     }
 
     return (
-        <div className="login-page">
+      <div className="login-page">
+      {loading ? <Loader /> : ''}
       <div className="container d-flex align-items-center position-relative py-5">
         <div className="card shadow-sm w-100 rounded overflow-hidden bg-none">
           <div className="card-body p-0">

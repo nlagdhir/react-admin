@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import {useNavigate, Link} from 'react-router-dom';
 import http from '../../../http';
+import Loader from '../../../utils/Loader';
+
 
 const ViewProduct = () => {
 
     const [products, setProducts] = useState([]);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         http.get('view-products').then(res => {
@@ -13,16 +16,13 @@ const ViewProduct = () => {
             {
                 setProducts(res.data.products);
             }
-            
+            setLoading(false);
         })
     },[]);
 
-    const deleteProduct = () => {
-
-    }
-
     return (
         <>
+        {loading ? <Loader /> : ''}
         <header className="bg-white shadow-sm px-4 py-3 z-index-20">
             <div className="container-fluid px-0">
             <h2 className="mb-0 p-1">View Product</h2>  
@@ -58,25 +58,33 @@ const ViewProduct = () => {
                           <th>Category</th>
                           <th>Product Name</th>
                           <th>Selling Price</th>
+                          <th>Status</th>
                           <th>Image</th>
                           <th>Edit</th>
-                          <th>Delete</th>
+                          
                         </tr>
                       </thead>
                       <tbody>
                       {products.map((product,index) => {
+                        let statusHTML = '';
+                        if(product.status === 1){
+                          statusHTML = <span className="text-danger">In Active</span>;
+                        }else{
+                          statusHTML = <span className="text-success">Active</span>;
+                        }
+
+                        
                         return <tr key={product.id}>
                             <th scope="row">{++index}</th>
                             <td>{product.category.name}</td>
                             <td>{product.name}</td>
                             <td>{product.selling_price}</td>
+                            <td>{statusHTML}</td>
                             <td><img src={`http://localhost:8000/${product.image}`} width='50px' alt={product.name} /></td>
                             <td>
                                 <Link to={`/admin/edit-product/${product.id}`} className="btn btn-success btn-sm">Edit</Link>
                             </td>
-                            <td>
-                                <button type="button" onClick={(e) => deleteProduct(e, product.id)} className="btn btn-danger btn-sm">Delete</button>
-                            </td>
+                            
                         </tr>
                     })}
                       </tbody>

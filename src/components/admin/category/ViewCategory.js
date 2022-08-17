@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
+import Loader from "../../../utils/Loader";
 import http from '../../../http';
 
 const ViewCategory = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
     const [categorylist, setCategoryList] = useState([]);
 
     useEffect(() => {
@@ -17,6 +19,7 @@ const ViewCategory = () => {
             {
                 setCategoryList(res.data.category);
             } 
+            setLoading(false);
         });
     }
 
@@ -40,6 +43,7 @@ const ViewCategory = () => {
 
     return (
         <>
+            {loading ? <Loader /> : ''}
             <header className="bg-white shadow-sm px-4 py-3 z-index-20">
                 <div className="container-fluid px-0">
                 <h2 className="mb-0 p-1">View Category</h2>  

@@ -4,12 +4,13 @@ import Tabs from 'react-bootstrap/Tabs';
 import { useParams, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import http from '../../../http';
+import Loader from '../../../utils/Loader';
 
 const EditCategory = () => {
 
     let { id } = useParams();
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(true);
     const [categoryInput, setCategoryInput] = useState({
         slug : '',
         name : '',
@@ -43,6 +44,7 @@ const EditCategory = () => {
                 swal('error',res.data.message,'error');
                 navigate('/admin/view-category');
             }
+            setLoading(false);
         })
     },[])
 
@@ -57,24 +59,15 @@ const EditCategory = () => {
 
     const handleCategoryFormUpdate = (event) => {
         event.preventDefault();
-
+        setLoading(true);
         const data = categoryInput;
 
         http.put(`update-category/${id}`,data).then(res => {
             if(res.data.status === 200) 
             {
-                setCategoryInput({
-                    slug : '',
-                    name : '',
-                    description : '',
-                    status : '',
-                    meta_title : '',
-                    meta_description : '',
-                    meta_keyword : '',
-                    error_list : [],
-                });
-
-                swal('success',res.data.message,'success');   
+                swal('success',res.data.message,'success').then(() => {
+                    navigate('/admin/view-category');
+                });   
             }
             else if(res.data.status === 422)
             {
@@ -82,13 +75,14 @@ const EditCategory = () => {
              
             } else if(res.data.status === 404){
                 swal('error',res.data.message,'error');
-                navigate('/admin/view-category');
             }
+            setLoading(false);
         })
     }
 
     return (
         <>
+            {loading ? <Loader /> : ''}
             <header className="bg-white shadow-sm px-4 py-3 z-index-20">
                 <div className="container-fluid px-0">
                 <h2 className="mb-0 p-1">Edit Category</h2>  

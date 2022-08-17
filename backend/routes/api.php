@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('store-product',[ProductController::class,'store']);
     Route::get('view-products',[ProductController::class,'index']);
     Route::get('product-edit/{id}',[ProductController::class,'edit']);
-    Route::put('update-product/{id}',[ProductController::class,'update']);
+    Route::post('update-product/{id}',[ProductController::class,'update']);
 
     Route::post('logout',[AuthController::class,'logout']);
 });

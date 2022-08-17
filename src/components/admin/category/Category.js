@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import http from '../../../http';
+import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
+import Loader from '../../../utils/Loader';
 
 const Category = () => {
-
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [categoryInput, setCategoryInput] = useState({
         slug : '',
         name : '',
@@ -28,7 +31,7 @@ const Category = () => {
 
     const handleCategoryFormSubmit = (event) => {
         event.preventDefault();
-
+        setLoading(true);
         const data = {
             slug : categoryInput.slug,
             name : categoryInput.name,
@@ -53,17 +56,21 @@ const Category = () => {
                     error_list : [],
                 });
 
-                swal('success',res.data.message,'success');   
+                swal('success',res.data.message,'success').then(() => {
+                    navigate('/admin/view-category');
+                });   
             }
             else if(res.data.status === 400)
             {
                 setCategoryInput({...categoryInput,error_list : res.data.errors});
             }
+            setLoading(false);
         })
     }
 
     return (
         <>
+            {loading ? <Loader /> : ''}
             <header className="bg-white shadow-sm px-4 py-3 z-index-20">
                 <div className="container-fluid px-0">
                 <h2 className="mb-0 p-1">Category</h2>  
