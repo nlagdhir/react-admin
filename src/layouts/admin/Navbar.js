@@ -2,8 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch, FaChartPie, FaRegEnvelope, FaEnvelope, FaSignOutAlt, FaWindowClose
 } from "react-icons/fa";
-import http from '../../http';
-import swal from 'sweetalert';
+import {logout} from '../../utils/Scripts';
 
 
 const Navbar = () => {
@@ -26,17 +25,7 @@ const Navbar = () => {
 
     const handleLogoutClick = (e) => {
         e.preventDefault();
-
-        http.post('logout').then(res => {
-            if(res.data.status === 200) 
-            {
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('auth_user');
-                swal('success',res.data.message,'success').then(() => {
-                    navigate('/login');
-                });
-            }
-        })
+        logout();
     }   
 
     return (

@@ -1,5 +1,8 @@
-const InputJS  = () => {
+import http from '../http';
+import swal from 'sweetalert';
 
+const InputJS  = () => {
+        
         let materialInputs = document.querySelectorAll('input.input-material');
         let materialLabel = document.querySelectorAll('label.label-material');
 
@@ -29,4 +32,18 @@ const InputJS  = () => {
         });
     }
 
-export {InputJS};
+
+const logout = () => {
+    http.post('logout').then(res => {
+        if(res.data.status === 200) 
+        {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
+            swal('success',res.data.message,'success').then(() => {
+                window.location = '/login';
+            });
+        }
+    })
+}
+
+export {InputJS, logout};

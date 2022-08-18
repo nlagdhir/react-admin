@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom'
 import Dashboard from './components/admin/Dashboard';
 import Profile from './components/admin/Profile';
-import Homepage from './components/Homepage';
+import Homepage from './components/frontend/Homepage';
 import Login from './components/Login';
 import Register from './components/Register';
 import Category from './components/admin/category/Category';
@@ -15,6 +15,10 @@ import MasterLayout from './layouts/admin/MasterLayout';
 import PrivateRoutes from './utils/PrivateRoutes';
 import NonLoggedInRoutes from './utils/NonLoggedInRoutes';
 import axios from 'axios';
+import Layout from './layouts/frontend/Layout';
+import About from './components/frontend/About';
+import Contact from './components/frontend/Contact';
+import Collections from './components/frontend/Collections';
 
 axios.defaults.withCredentials = true;
 
@@ -22,7 +26,12 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route path="/" element={<Layout />}>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/collections" element={<Collections />} ></Route>
+        </Route>
         <Route element={<NonLoggedInRoutes />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
