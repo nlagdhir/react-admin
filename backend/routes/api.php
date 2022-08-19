@@ -22,6 +22,8 @@ Route::post('register',[AuthController::class, 'register']);
 Route::post('login',[AuthController::class,'login']);
 
 Route::get('all-categories',[FrontendController::class,'allcategories']);
+Route::get('product-list/{slug}',[FrontendController::class,'productList']);
+Route::get('view-product/{category_slug}/{product_slug}',[FrontendController::class,'viewProduct']);
 
 Route::middleware('auth:sanctum')->group(function() {
 

@@ -19,6 +19,8 @@ import Layout from './layouts/frontend/Layout';
 import About from './components/frontend/About';
 import Contact from './components/frontend/Contact';
 import Collections from './components/frontend/Collections';
+import ViewProducts from './components/frontend/ViewProducts';
+import ProductDetails from './components/frontend/ProductDetails';
 
 axios.defaults.withCredentials = true;
 
@@ -30,7 +32,9 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/collections" element={<Collections />} ></Route>
+          <Route path="/collections" element={<Collections />} />
+          <Route path="/collections/:slug" element={<ViewProducts />} />
+          <Route path="/collections/:category/:product" element={<ProductDetails />} />
         </Route>
         <Route element={<NonLoggedInRoutes />}>
           <Route path="/login" element={<Login />} />
