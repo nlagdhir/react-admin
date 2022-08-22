@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import http from '../../http';
 import Loader from '../../utils/Loader';
 
@@ -28,6 +29,13 @@ const Collections = () => {
                     </div>
                 </div>
             </header>
+
+            <nav aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><Link to="/">Home</Link></li>
+                    <li className="breadcrumb-item active" aria-current="page">Collections</li>
+                </ol>
+            </nav>
 
             <section className="py-5">
             <div className="container px-4 px-lg-5 mt-5">

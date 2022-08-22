@@ -11,6 +11,7 @@ import EditCategory from './components/admin/category/EditCategory';
 import AddProduct from './components/admin/product/AddProduct';
 import ViewProduct from './components/admin/product/ViewProduct';
 import EditProduct from './components/admin/product/EditProduct';
+import Cart from './components/frontend/Cart';
 import MasterLayout from './layouts/admin/MasterLayout';
 import PrivateRoutes from './utils/PrivateRoutes';
 import NonLoggedInRoutes from './utils/NonLoggedInRoutes';
@@ -35,6 +36,7 @@ function App() {
           <Route path="/collections" element={<Collections />} />
           <Route path="/collections/:slug" element={<ViewProducts />} />
           <Route path="/collections/:category/:product" element={<ProductDetails />} />
+          <Route path="cart" element={<Cart />} />
         </Route>
         <Route element={<NonLoggedInRoutes />}>
           <Route path="/login" element={<Login />} />
@@ -51,6 +53,8 @@ function App() {
             <Route path="add-product" element={<AddProduct />} />
             <Route path="view-product" element={<ViewProduct />} />
             <Route path="edit-product/:id" element={<EditProduct />} />
+            
+
           </Route>
         </Route>
       </Routes>

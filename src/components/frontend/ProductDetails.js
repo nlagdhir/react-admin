@@ -9,6 +9,8 @@ const ProductDetails = () => {
     const { category, product } = useParams();
     const [loading, setLoading] = useState(true);
     const [productData, setProductData] = useState([]);
+    const [quantity, setQuantity] = useState(1);
+
     useEffect(() => {
         http.get(`view-product/${category}/${product}`).then(res => {
             if (res.data.status === 200) {
@@ -20,7 +22,45 @@ const ProductDetails = () => {
             setLoading(false);
         })
 
-    })
+    },[]);
+
+    const handleIncrement = () => {
+        setQuantity(prevCount => prevCount + 1);
+    }
+
+    const handleDecrement = () => {
+        if(quantity > 0){
+            setQuantity(prevCount => prevCount - 1);
+        }  
+    }
+
+    const handleAddtocardClick = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const data = {
+            product_id : productData.id,
+            product_qty : quantity
+        }
+
+        http.post(`/add-to-cart`,data).then(res=> {
+            
+            if(res.data.status === 200)
+            {
+                swal('Success',res.data.message,'success');
+            }
+            else if(res.data.status === 409)
+            {
+                swal('Warning',res.data.message,'warning');
+            }else if(res.data.status === 401)
+            {
+                swal('Error',res.data.message,'error');
+            }else if(res.data.status === 404)
+            {
+                swal('Warning',res.data.message,'warning');
+            }
+            setLoading(false);
+        })
+    }
     return (
         <>
             {loading ? <Loader /> : ''}
@@ -61,16 +101,16 @@ const ProductDetails = () => {
                             <div className="row mt-3"> 
                                 <div className="col-md-3 mt-3">
                                     <div className="input-group">
-                                        <button type="button" className="input-text-group">-</button>
-                                        <input type="text" className="form-control text-center" value="1" />
-                                        <button type="button" className="input-text-group">+</button>
+                                        <button type="button" onClick={handleDecrement} className="input-text-group">-</button>
+                                        <div className="form-control text-center">{quantity}</div>
+                                        <button type="button" onClick={handleIncrement}  className="input-text-group">+</button>
                                     </div>
                                 </div>
 
                             </div>
                             <div className="row mt-3">
                                 <div className="card-footer p-4 pl-0 border-top-0 bg-transparent">
-                                    <a className="btn btn-outline-dark mt-auto" href="#">Add To Cart</a>
+                                    <button className="btn btn-outline-dark mt-auto" onClick={handleAddtocardClick}>Add to Cart</button>
                                     <a className="btn btn-outline-danger mt-auto ms-2" href="#">Add To Whishlist</a>
                                 </div>
                             </div>

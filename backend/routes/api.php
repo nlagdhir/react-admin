@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\API\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,8 @@ Route::post('login',[AuthController::class,'login']);
 Route::get('all-categories',[FrontendController::class,'allcategories']);
 Route::get('product-list/{slug}',[FrontendController::class,'productList']);
 Route::get('view-product/{category_slug}/{product_slug}',[FrontendController::class,'viewProduct']);
+Route::post('add-to-cart',[CartController::class,'addtocart']);
+Route::get('cart',[CartController::class,'viewcart']);
 
 Route::middleware('auth:sanctum')->group(function() {
 

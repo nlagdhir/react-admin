@@ -26,12 +26,18 @@ const Navbar = () => {
                             <li className="nav-item">
                                 <NavLink activeclassname="active" className='nav-link'  to="/contact">Contact</NavLink>
                             </li>
+
                             <li className="nav-item">
                                 <NavLink activeclassname="active" className='nav-link'  to="/collections">Collections</NavLink>
                             </li>
+                        
                             <li className="nav-item">
-                                {token ? <buttom type="button" onClick={handleLogout} className='btn btn-outline-danger' to="/login">Logout</buttom> : <NavLink className='btn btn-outline-success' to="/login">Login</NavLink>}      
+                                <NavLink activeclassname="active" className='nav-link'  to="/cart">Cart</NavLink>
                             </li>
+                            <li className="nav-item">
+                                {token ? <button type="button" onClick={handleLogout} className='btn btn-outline-danger' to="/login">Logout</button> : <NavLink className='btn btn-outline-success' to="/login">Login</NavLink>}      
+                            </li>
+                            
                         </ul>
                     </div>
                 </nav>
