@@ -7,6 +7,7 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\API\CartController;
+use App\Http\Controllers\API\CheckoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,9 @@ Route::get('product-list/{slug}',[FrontendController::class,'productList']);
 Route::get('view-product/{category_slug}/{product_slug}',[FrontendController::class,'viewProduct']);
 Route::post('add-to-cart',[CartController::class,'addtocart']);
 Route::get('cart',[CartController::class,'viewcart']);
+Route::delete('delete-cartitem/{cart_id}',[CartController::class,'deleteCartItem']);  
+Route::put('cart-updatequantity/{cart_id}/{scope}',[CartController::class,'updateCartQuantity']);
+Route::put('place-order',[CheckoutController::class,'placeOrder']);
 
 Route::middleware('auth:sanctum')->group(function() {
 

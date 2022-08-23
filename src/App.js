@@ -12,6 +12,7 @@ import AddProduct from './components/admin/product/AddProduct';
 import ViewProduct from './components/admin/product/ViewProduct';
 import EditProduct from './components/admin/product/EditProduct';
 import Cart from './components/frontend/Cart';
+import Checkout from './components/frontend/Checkout';
 import MasterLayout from './layouts/admin/MasterLayout';
 import PrivateRoutes from './utils/PrivateRoutes';
 import NonLoggedInRoutes from './utils/NonLoggedInRoutes';
@@ -22,6 +23,7 @@ import Contact from './components/frontend/Contact';
 import Collections from './components/frontend/Collections';
 import ViewProducts from './components/frontend/ViewProducts';
 import ProductDetails from './components/frontend/ProductDetails';
+import ThankYou from './components/frontend/ThankYou';
 
 axios.defaults.withCredentials = true;
 
@@ -37,6 +39,8 @@ function App() {
           <Route path="/collections/:slug" element={<ViewProducts />} />
           <Route path="/collections/:category/:product" element={<ProductDetails />} />
           <Route path="cart" element={<Cart />} />
+          <Route path='/checkout' element={<Checkout />} />
+          <Route path='/thank-you' element={<ThankYou />} />
         </Route>
         <Route element={<NonLoggedInRoutes />}>
           <Route path="/login" element={<Login />} />

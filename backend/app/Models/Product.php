@@ -11,22 +11,24 @@ class Product extends Model
 {
     use HasApiTokens, HasFactory;
     protected $table = 'products';
-    protected $fillables = [
-        'category',
-        'meta_title',
-        'meta_keyword',
-        'meta_description',
-        'slug',
-        'name',
-        'description',
-        'brand',
-        'selling_price',
-        'original_price',
-        'image',
-        'featured',
-        'popular',
-        'status',
-    ];
+    // protected $fillables = [
+    //     'category',
+    //     'meta_title',
+    //     'meta_keyword',
+    //     'meta_description',
+    //     'slug',
+    //     'name',
+    //     'description',
+    //     'brand',
+    //     'selling_price',
+    //     'original_price',
+    //     'image',
+    //     'featured',
+    //     'popular',
+    //     'status',
+    //     'quantity',
+    // ];
+    protected $guarded = [];
 
     protected $with = ['category'];
 

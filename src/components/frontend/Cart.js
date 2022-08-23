@@ -9,7 +9,7 @@ const Cart = () => {
     const [loading, setLoading] = useState(true);
     const [cart, setCart] = useState([]);
     const navigate = useNavigate();
-
+    let totalCartPrice = 0;
     useEffect(() => {
         http.get(`/cart`).then(res=> {
             
@@ -20,14 +20,63 @@ const Cart = () => {
             else if(res.data.status === 401)
             {
                 swal('Error',res.data.message,'error');
-                navigate('/');
+                navigate('/'); 
             }
             setLoading(false);
         })
     },[]);
 
+    const handleDecrement = (cart_id) => {
+        setCart(cart => {
+            return cart.map(item => {
+                return (cart_id === item.id) ? {...item, product_qty : (item.product_qty > 1 ? item.product_qty - 1 : 0)} : item;
+            })
+        })
+        updateCartQuantity(cart_id,'dec');
+    }
+
+    const handleIncrement = (cart_id) => {
+        setCart(cart => {
+            return cart.map(item => {
+                return (cart_id === item.id) ? {...item, product_qty : item.product_qty + 1} : item;
+            })
+        })
+        updateCartQuantity(cart_id,'inc');
+    }
+
+    const updateCartQuantity = (cart_id, scope) => {
+        setLoading(true);
+        http.put(`cart-updatequantity/${cart_id}/${scope}`).then(res => {
+            if(res.data.status === 2000)
+            {
+                swal('Success',res.data.message,'success');
+            }
+            setLoading(false);
+        })
+    }
+
+    const deleteCartItem = (event, cart_id) => {
+        event.preventDefault();
+
+        const thisClicked = event.currentTarget;
+        thisClicked.innerText = 'Removing';
+
+        http.delete(`delete-cartitem/${cart_id}`).then(res => {  
+            if(res.data.status === 200)
+            {
+                swal('Success',res.data.message,'success');
+                thisClicked.closest('tr').remove();
+            }
+            else if(res.data.status === 404)
+            {   
+                swal('Error',res.data.message,'error');
+                thisClicked.innerText = 'Remove';
+            }
+        })
+    }
+
     let cartHTML = '';
-    if(cart.length > 0){
+    if(cart && cart.length > 0){
         cartHTML = <div className="table-responsive">
         <table className="table table-bordered">
             <thead>
@@ -41,7 +90,9 @@ const Cart = () => {
                 </tr>
             </thead>
             <tbody>
+
                 {cart.map(item => {
+                    totalCartPrice += item.product.selling_price * item.product_qty;
                     return (
                         <tr key={item.id}>
                             <td width="10%">
@@ -51,14 +102,14 @@ const Cart = () => {
                             <td width="15%" className="text-center">{item.product.selling_price}</td>
                             <td width="15%">
                                 <div className="input-group">
-                                    <button type="button" className="input-group-text">-</button>
+                                    <button type="button" onClick={() => handleDecrement(item.id)} className="input-group-text">-</button>
                                     <div className="form-control text-center">{item.product_qty}</div>
-                                    <button type="button" className="input-group-text">+</button>
+                                    <button type="button" onClick={() => handleIncrement(item.id)} className="input-group-text">+</button>
                                 </div>
                             </td>
                             <td width="15%" className="text-center">{item.product.selling_price * item.product_qty}</td>
                             <td width="15%">
-                                <button type="button" className="btn btn-danger btn-sm">Remove</button>
+                                <button type="button" onClick={(event) => deleteCartItem(event,item.id)} className="btn btn-danger btn-sm">Remove</button>
                             </td>
                         </tr>
                     )
@@ -100,6 +151,19 @@ const Cart = () => {
                 <div className="row ">
                 <div className="col-md-12 ">
                     {cartHTML}
+                </div>
+                <div className="col-md-8"></div>
+                <div className="col-md-4">
+                    <div className="card card-body mt-3">
+                        <h4>Sub Total : 
+                            <span className="float-end">{totalCartPrice}</span>
+                        </h4>
+                        <h4>Grand Total : 
+                            <span className="float-end">{totalCartPrice}</span>
+                        </h4>
+                        <hr />
+                        <Link to="/checkout" className="btn btn-primary">Checkout</Link>
+                    </div>
                 </div>
                 </div>
             </div>
