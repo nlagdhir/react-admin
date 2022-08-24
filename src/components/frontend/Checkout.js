@@ -43,7 +43,7 @@ const Checkout = () => {
         setCheckoutInput({...checkoutInput,[e.target.name]:e.target.value});
     }
 
-    const submitOrder = (e) => {
+    const submitOrder = (e, payment_mode) => {
         e.preventDefault();
 
         const data = {
@@ -55,19 +55,125 @@ const Checkout = () => {
             city : checkoutInput.city,
             state : checkoutInput.state,
             zipcode : checkoutInput.zipcode,
+            payment_mode : payment_mode,
+            payment_id : '',
         }
 
-        http.put('/place-order',data).then(res => {
-            if(res.data.status === 200)
-            {   
-                swal('Success', res.data.message,'success');
-                navigate('/thank-you');
-            } else if(res.data.status === 422) { 
-                swal('Error','All fields are required','error');
-                setError(res.data.errors);
-                
-            }
-        })
+        
+
+        switch(payment_mode) {
+            case 'cod' : 
+                http.put('/place-order',data).then(res => {
+                    if(res.data.status === 200)
+                    {   
+                        swal('Success', res.data.message,'success');
+                        setError([]);
+                        navigate('/thank-you');
+                    } else if(res.data.status === 422) { 
+                        swal('Error','All fields are required','error');
+                        setError(res.data.errors);
+                        
+                    }
+                })
+                break;
+            case 'razorpay' : 
+                http.post('/validate-order',data).then(res => {
+                    if(res.data.status === 200)
+                    {   
+                        setError([]);
+
+                        let options = {
+                            "key": "[Key ID]", // Enter the Key ID generated from the Dashboard
+                            "amount": (totalCartPrice * 100),
+                            "currency": "INR",
+                            "description": "Thank you for purchasing from ECom",
+                            "image": "https://s3.amazonaws.com/rzp-mobile/images/rzp.jpg",
+                            "prefill":
+                            {
+                              "name":data.firstname + data.lastname,
+                              "email": data.email,
+                              "contact": data.phone,
+                            },
+                            config: {
+                              display: {
+                                blocks: {
+                                  hdfc: { //name for HDFC block
+                                    name: "Pay using HDFC Bank",
+                                    instruments: [
+                                      {
+                                        method: "card",
+                                        issuers: ["HDFC"]
+                                      },
+                                      {
+                                        method: "netbanking",
+                                        banks: ["HDFC"]
+                                      },
+                                    ]
+                                  },
+                                  other: { //  name for other block
+                                    name: "Other Payment modes",
+                                    instruments: [
+                                      {
+                                        method: "card",
+                                        issuers: ["ICIC"]
+                                      },
+                                      {
+                                        method: 'netbanking',
+                                      }
+                                    ]
+                                  }
+                                },
+                                hide: [
+                                  {
+                                  method: "upi"
+                                  }
+                                ],
+                                sequence: ["block.hdfc", "block.other"],
+                                preferences: {
+                                  show_default_blocks: false // Should Checkout show its default blocks?
+                                }
+                              }
+                            },
+                            "handler": function (response) {
+                              data.payment_id = response.razorpay_payment_id;
+                              http.put('/place-order',data).then(res => {
+                                if(res.data.status === 200)
+                                {   
+                                    swal('Success', res.data.message,'success');
+                                    setError([]);
+                                    navigate('/thank-you');
+                                } else if(res.data.status === 422) { 
+                                    swal('Error','All fields are required','error');
+                                    setError(res.data.errors);
+                                    
+                                }
+                            })
+                            },
+                            "modal": {
+                              "ondismiss": function () {
+                                let txt = '';
+                                if (window.confirm("Are you sure, you want to close the form?")) {
+                                  txt = "You pressed OK!";
+                                  console.log("Checkout form closed by the user");
+                                } else {
+                                  txt = "You pressed Cancel!";
+                                  console.log("Complete the Payment")
+                                }
+                              }
+                            }
+                          };
+                          var rzp = new window.Razorpay(options);
+                          rzp.open();
+                    } else if(res.data.status === 422) { 
+                        swal('Error','All fields are required','error');
+                        setError(res.data.errors);
+                        
+                    }
+                });
+                break;
+            default : 
+                break;
+        }
     }
 
     return (
@@ -156,7 +262,8 @@ const Checkout = () => {
                                         </div>
                                         <div className="col-md-12">
                                             <div className="form-group text-end">
-                                                <button type="button" onClick={submitOrder} className="btn btn-primary">Place Order</button>
+                                                <button type="button" onClick={(e) =>submitOrder(e,'cod')} className="btn btn-primary m-lg-2">Place Order</button>
+                                                <button type="button" onClick={(e) =>submitOrder(e,'razorpay')} className="btn btn-primary">Pay Online</button>
                                             </div>
                                         </div>
                                     </div>

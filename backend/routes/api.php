@@ -31,6 +31,7 @@ Route::get('cart',[CartController::class,'viewcart']);
 Route::delete('delete-cartitem/{cart_id}',[CartController::class,'deleteCartItem']);  
 Route::put('cart-updatequantity/{cart_id}/{scope}',[CartController::class,'updateCartQuantity']);
 Route::put('place-order',[CheckoutController::class,'placeOrder']);
+Route::post('validate-order',[CheckoutController::class,'validateOrder']);
 
 Route::middleware('auth:sanctum')->group(function() {
 
