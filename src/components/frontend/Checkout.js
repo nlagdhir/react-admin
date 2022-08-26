@@ -2,8 +2,6 @@ import React, {useEffect, useState } from "react";
 import ReactDOM from 'react-dom'
 import { useNavigate, Link } from "react-router-dom";
 import Loader from "../../utils/Loader"; 
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 import http from '../../http';
 import swal from "sweetalert";
 
@@ -50,52 +48,52 @@ const Checkout = () => {
         setCheckoutInput({...checkoutInput,[e.target.name]:e.target.value});
     }
 
-    const orderinfo_data = {
-        firstname : checkoutInput.firstname,
-        lastname : checkoutInput.lastname,
-        phone : checkoutInput.phone,
-        email : checkoutInput.email,
-        address : checkoutInput.address,
-        city : checkoutInput.city,
-        state : checkoutInput.state,
-        zipcode : checkoutInput.zipcode,
-        payment_mode : 'PayPal',
-        payment_id : '',
-    }
+    // const orderinfo_data = {
+    //     firstname : checkoutInput.firstname,
+    //     lastname : checkoutInput.lastname,
+    //     phone : checkoutInput.phone,
+    //     email : checkoutInput.email,
+    //     address : checkoutInput.address,
+    //     city : checkoutInput.city,
+    //     state : checkoutInput.state,
+    //     zipcode : checkoutInput.zipcode,
+    //     payment_mode : 'PayPal',
+    //     payment_id : '',
+    // }
 
-    const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
+    // const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
 
-    const createOrder = (data, actions) =>  {
-        return actions.order.create({
-          purchase_units: [
-            {
-              amount: {
-                value: totalCartPrice,
-              },
-            },
-          ],
-        });
-      }
+    // const createOrder = (data, actions) =>  {
+    //     return actions.order.create({
+    //       purchase_units: [
+    //         {
+    //           amount: {
+    //             value: totalCartPrice,
+    //           },
+    //         },
+    //       ],
+    //     });
+    //   }
 
-      const onApprove = (data, actions) => {
-        return actions.order.capture().then((details) => {
-            console.log(details);
-            orderinfo_data.payment_id = details.id;
-            http.put('/place-order',orderinfo_data).then(res => {
-            if(res.data.status === 200)
-            {   
-                swal('Success', res.data.message,'success');
-                setError([]);
-                navigate('/thank-you');
-            } else if(res.data.status === 422) { 
-                swal('Error','All fields are required','error');
-                setError(res.data.errors);
+    //   const onApprove = (data, actions) => {
+    //     return actions.order.capture().then((details) => {
+    //         console.log(details);
+    //         orderinfo_data.payment_id = details.id;
+    //         http.put('/place-order',orderinfo_data).then(res => {
+    //         if(res.data.status === 200)
+    //         {   
+    //             swal('Success', res.data.message,'success');
+    //             setError([]);
+    //             navigate('/thank-you');
+    //         } else if(res.data.status === 422) { 
+    //             swal('Error','All fields are required','error');
+    //             setError(res.data.errors);
                 
-            }
+    //         }
 
-        })
-      });
-    };
+    //     })
+    //   });
+    // };
 
     const submitOrder = (e, payment_mode) => {
         e.preventDefault();
@@ -225,21 +223,21 @@ const Checkout = () => {
                     }
                 });
                 break;
-            case 'paypal' : 
-            http.post('/validate-order',data).then(res => {
-                if(res.data.status === 200)
-                {   
-                    setError([]);
-                    setShow(true);
+            // case 'paypal' : 
+            // http.post('/validate-order',data).then(res => {
+            //     if(res.data.status === 200)
+            //     {   
+            //         setError([]);
+            //         setShow(true);
                    
 
-                } else if(res.data.status === 422) { 
-                    swal('Error','All fields are required','error');
-                    setError(res.data.errors);
+            //     } else if(res.data.status === 422) { 
+            //         swal('Error','All fields are required','error');
+            //         setError(res.data.errors);
                     
-                }
-            });
-            break;
+            //     }
+            // });
+            // break;
 
             default : 
                 break;
@@ -250,7 +248,7 @@ const Checkout = () => {
         <>
             {loading ? <Loader /> : ''}
 
-            <Modal show={show} onHide={handleClose} animation={false}>
+            {/* <Modal show={show} onHide={handleClose} animation={false}>
             <Modal.Header closeButton>
             <Modal.Title>Pay with PayPal</Modal.Title>
             </Modal.Header>
@@ -269,7 +267,7 @@ const Checkout = () => {
                 Save Changes
             </Button>
             </Modal.Footer>
-        </Modal>
+        </Modal> */}
 
             <header className="bg-dark py-5">
                 <div className="container px-4 px-lg-5 my-5">
@@ -356,7 +354,7 @@ const Checkout = () => {
                                             <div className="form-group text-end">
                                                 <button type="button" onClick={(e) =>submitOrder(e,'cod')} className="btn btn-primary m-lg-2">Place Order</button>
                                                 <button type="button" onClick={(e) =>submitOrder(e,'razorpay')} className="btn btn-primary m-lg-2">Pay by Razorpay</button>
-                                                <button type="button" onClick={(e) =>submitOrder(e,'paypal')} className="btn btn-primary">Pay with PayPal</button>
+                                                {/* <button type="button" onClick={(e) =>submitOrder(e,'paypal')} className="btn btn-primary">Pay with PayPal</button> */}
                                             </div>
                                         </div>
                                     </div>

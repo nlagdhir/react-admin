@@ -34,6 +34,7 @@ const Sidebar = () => {
                 <li className={location.pathname == '/admin/view-product' ? "sidebar-item active" : "sidebar-item"}><Link to='/admin/view-product' className="sidebar-link">View Product</Link></li>
               </ul>
             </li>
+            <li className={location.pathname == '/admin/orders' ? "sidebar-item active" : "sidebar-item"}><Link to='/admin/orders' className="sidebar-link"><FaHome />Orders</Link></li>
           </ul>
         </nav>
     )

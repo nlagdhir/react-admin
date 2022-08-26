@@ -11,6 +11,7 @@ import EditCategory from './components/admin/category/EditCategory';
 import AddProduct from './components/admin/product/AddProduct';
 import ViewProduct from './components/admin/product/ViewProduct';
 import EditProduct from './components/admin/product/EditProduct';
+import Order from './components/admin/order/Order';
 import Cart from './components/frontend/Cart';
 import Checkout from './components/frontend/Checkout';
 import MasterLayout from './layouts/admin/MasterLayout';
@@ -57,6 +58,7 @@ function App() {
             <Route path="add-product" element={<AddProduct />} />
             <Route path="view-product" element={<ViewProduct />} />
             <Route path="edit-product/:id" element={<EditProduct />} />
+            <Route path="orders" element={<Order />} />
             
 
           </Route>

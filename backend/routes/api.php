@@ -8,6 +8,7 @@ use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CheckoutController;
+use App\Http\Controllers\API\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +54,8 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('product-edit/{id}',[ProductController::class,'edit']);
     Route::post('update-product/{id}',[ProductController::class,'update']);
 
+    // Orders 
+    Route::get('orders',[OrderController::class,'index']);
     Route::post('logout',[AuthController::class,'logout']);
 });
 

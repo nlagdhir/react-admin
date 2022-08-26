@@ -92,6 +92,7 @@ const Cart = () => {
             <tbody>
 
                 {cart.map(item => {
+                    console.log(item);
                     totalCartPrice += item.product.selling_price * item.product_qty;
                     return (
                         <tr key={item.id}>
